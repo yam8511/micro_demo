@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+service Currency {
+	rpc List(CurrencyListRequest) returns (CurrencyListResponse) {}
+	rpc Exchange (CurrencyRequest) returns (CurrencyResponse);
+	rpc Ping(PingRequest) returns (PongResponse) {}
+}
+
+message CurrencyListRequest {
+	string name = 1;
+}
+
+message CurrencyListResponse {
+	map<string, string> list = 2;
+}
+
+message CurrencyRequest {
+	string from = 3;
+	string to = 4;
+}
+
+message CurrencyResponse {
+	double exchange = 5;
+	string update_time = 6;
+}
+
+message PingRequest{}
+message PongResponse{
+	string service_name = 1;
+}

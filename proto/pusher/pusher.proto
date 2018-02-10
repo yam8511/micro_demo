@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+service Pusher {
+	// 測試連線
+	rpc Ping(PingRequest) returns (PongResponse);
+	// 註冊server
+	rpc Register (RegisterRequest) returns (RegisterResponse);
+	// 註冊列表
+	rpc RegisterList (RegisterListRequest) returns (RegisterListResponse);
+	// 聊天室列表
+	rpc ChatRoomList (ChatRoomListRequest) returns (ChatRoomListResponse);
+	// 推送訊息
+	rpc Push (PushRequest) returns (PushResponse);
+	// 取消註冊
+	rpc Deregister (DeregisterRequest) returns (DeregisterResponse);
+}
+
+message PingRequest{}
+message PongResponse{
+	string service_name = 1;
+	string environment = 2;
+}
+
+message RegisterRequest{
+	string ip = 1;
+	string host = 2;
+	string port = 3;
+	string api_key = 4;
+	string chat_room = 5;
+}
+message RegisterResponse{
+	int64 error_code = 1;
+	string error_text = 2;
+	uint64 id = 3;
+}
+
+message RegisterListRequest{
+	string chat_room = 1;
+}
+message RegisterListResponse {
+	map<uint64, RegisterRequest> register_list = 1;
+}
+
+message ChatRoomListRequest {
+	uint64 id = 1;
+}
+message ChatRoomListResponse {
+	repeated string chat_room_list = 1;
+}
+
+message PushRequest{
+	string chat_room = 1;
+	string message = 2;
+}
+message PushResponse{
+	int64 error_code = 1;
+	string error_text = 2;
+}
+
+message DeregisterRequest{
+	uint64 id = 1;
+}
+message DeregisterResponse{
+	int64 error_code = 1;
+	string error_text = 2;
+}
