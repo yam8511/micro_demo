@@ -342,9 +342,9 @@
 		{
 			"checksumSHA1": "LLfqQ9em0CVZDrrM78WYiDmSp74=",
 			"path": "melon_micro/proto/config",
-			"revision": "94829a2b0cdd67f75ca4161d1a89d9ae801aba70",
-			"revisionTime": "2018-02-07T09:13:33Z"
+			"revision": "a46098af34cd93af319ab3c6edf14ab91619bdd6",
+			"revisionTime": "2018-02-10T05:42:18Z"
 		}
 	],
-	"rootPath": "melon_micro/services/config"
+	"rootPath": "micro_demo/services/config"
 }

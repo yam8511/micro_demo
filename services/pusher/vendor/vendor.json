@@ -354,9 +354,9 @@
 		{
 			"checksumSHA1": "cuNfqqVj4K4C9ua33o2JYQ9tZGM=",
 			"path": "melon_micro/proto/pusher",
-			"revision": "ea90050533e3d2b3747376b2a489c89c988e31e1",
-			"revisionTime": "2018-02-08T12:06:10Z"
+			"revision": "a46098af34cd93af319ab3c6edf14ab91619bdd6",
+			"revisionTime": "2018-02-10T05:42:18Z"
 		}
 	],
-	"rootPath": "melon_micro/services/pusher"
+	"rootPath": "micro_demo/services/pusher"
 }

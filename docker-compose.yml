@@ -48,7 +48,7 @@ services:
             - registry
 
     # Common Data
-    melon-common-redis:
+    redis:
         image: redis
         restart: always
         tty: true
@@ -68,11 +68,11 @@ services:
         depends_on:
             - registry
         volumes:
-            - .:/go/src/melon_micro
-        working_dir: /go/src/melon_micro/services/config
+            - .:/go/src/micro_demo
+        working_dir: /go/src/micro_demo/services/config
         environment:
             - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - PROJECT_ENV=local
+            - PROJECT_ENV=dev
 
     greeter:
         image: golang:latest
@@ -86,11 +86,11 @@ services:
         depends_on:
             - registry
         volumes:
-            - .:/go/src/melon_micro
-        working_dir: /go/src/melon_micro/services/greeter
+            - .:/go/src/micro_demo
+        working_dir: /go/src/micro_demo/services/greeter
         environment:
             - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - PROJECT_ENV=local
+            - PROJECT_ENV=dev
 
     currency:
         image: golang:latest
@@ -102,8 +102,8 @@ services:
         depends_on:
             - registry
         volumes:
-            - .:/go/src/melon_micro
-        working_dir: /go/src/melon_micro/services/currency
+            - .:/go/src/micro_demo
+        working_dir: /go/src/micro_demo/services/currency
         environment:
             - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
 
@@ -116,13 +116,13 @@ services:
             - service_network
         depends_on:
             - registry
-            - melon-common-redis
+            - redis
         volumes:
-            - .:/go/src/melon_micro
-        working_dir: /go/src/melon_micro/services/pusher
+            - .:/go/src/micro_demo
+        working_dir: /go/src/micro_demo/services/pusher
         environment:
             - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - PROJECT_ENV=local
+            - PROJECT_ENV=dev
 
 networks:
     service_network:

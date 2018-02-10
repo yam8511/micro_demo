@@ -1,0 +1,121 @@
+[app]
+env = "dev"
+
+[database]
+
+    [database.game_master]
+    db = "foo"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "foo"
+    password = "qwe123"
+
+    [database.game_slave]
+    db = "foo"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "foo"
+    password = "qwe123"
+
+    [database.trade_master]
+    db = "bar"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "bar"
+    password = "abc123"
+
+    [database.trade_slave]
+    db = "bar"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "bar"
+    password = "abc123"
+
+    [database.member_master]
+    db = "bar"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "bar"
+    password = "abc123"
+
+    [database.member_slave]
+    db = "bar"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "bar"
+    password = "abc123"
+
+    [database.test]
+    db = "bar"
+    host_master = "127.0.0.1"
+    host_slave = "127.0.0.1"
+    port = "3306"
+    username = "bar"
+    password = "abc123"
+
+[cache]
+
+    [cache.both_master]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.both_slave]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.game_master]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.game_slave]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.trade_master]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.trade_slave]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.member_master]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.member_slave]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+    [cache.test]
+    host = "redis"
+    port = ":6379"
+    password = ""
+
+[api]
+
+    [api.durian]
+    ip = "127.0.0.1"
+    host = "durian"
+    port = "8888"
+    api_key = "kfjsodfjosiad"
+
+    [api.green]
+    ip = "127.0.0.1"
+    host = "green"
+    port = "7777"
+    api_key = "alkzcxmoqwej"

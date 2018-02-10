@@ -1,8 +1,0 @@
-[app]
-env = "local"
-
-[cache]
-host = "melon-common-redis"
-port = ":6379"
-password = ""
-channel = "melon_pusher"

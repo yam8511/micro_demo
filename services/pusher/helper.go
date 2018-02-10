@@ -11,15 +11,14 @@ import (
 func Usage() {
 	if GetAppEnv() == "" {
 		fmt.Printf(`
-			📖  Melon Micro 的 Pusher 說明 📖
+			📖  Micro 的 Pusher 說明 📖
 			請傳入以下環境變數：
 
 			⚙  PROJECT_ENV : 專案環境
-				✏  local 本機
-				✏  development 開發站
-				✏  gcp-qatest 測試站
+				✏  dev 開發
+				✏  prod 正式
 
-			📌 舉例：  PROJECT_ENV=local ./pusher
+			📌 舉例：  PROJECT_ENV=dev ./pusher
 `)
 		os.Exit(0)
 	} else {

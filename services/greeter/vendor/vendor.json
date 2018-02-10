@@ -324,9 +324,9 @@
 		{
 			"checksumSHA1": "oVdznbv75ojMJVSF9vrZhosrC+M=",
 			"path": "melon_micro/proto/greeter",
-			"revision": "fde3d05e92c386bf7e288dec61d4fdb5c167cb39",
-			"revisionTime": "2018-02-07T18:13:11Z"
+			"revision": "a46098af34cd93af319ab3c6edf14ab91619bdd6",
+			"revisionTime": "2018-02-10T05:42:18Z"
 		}
 	],
-	"rootPath": "melon_micro/services/greeter"
+	"rootPath": "micro_demo/services/greeter"
 }
