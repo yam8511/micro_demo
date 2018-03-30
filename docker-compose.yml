@@ -17,7 +17,7 @@ services:
             - registry
         environment:
             - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - MICRO_SERVICE_ADDRESS=${SERVICE_ADDRESS}
+            - MICRO_SERVER_ADDRESS=${SERVER_ADDRESS}
 
     # Data Center
     redis:
