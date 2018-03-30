@@ -1,6 +1,39 @@
 version: '3'
 
 services:
+    # Service
+    greeter:
+        build:
+            context: .
+            args:
+                - SERVICE_NAME=greeter
+        restart: on-failure
+        # 指定結束容器時，發出 interrupt 訊號 (Ctrl + C)
+        # stop_signal: SIGINT
+        tty: true
+        networks:
+            - service_network
+        depends_on:
+            - registry
+        environment:
+            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
+            - MICRO_SERVICE_ADDRESS=${SERVICE_ADDRESS}
+
+    # Data Center
+    redis:
+        image: redis
+        restart: always
+        tty: true
+        networks:
+            - service_network
+
+    mysql:
+        image: mysql
+        restart: always
+        tty: true
+        networks:
+            - service_network
+
     # Micro Tool
     registry:
         image: progrium/consul:latest
@@ -8,16 +41,17 @@ services:
         command: -server -bootstrap -rejoin
         ports:
             - "8300:8300"
-            - "8400:8400"
             - "8500:8500"
-            - "8600:53/udp"
         networks:
             - service_network
 
     sidecar:
-        image: microhq/micro
+        image: yam8511/micro
         restart: always
-        command: --sidecar_address=0.0.0.0:8501 --registry_address=registry:8500 --register_interval=5 --register_ttl=10 --enable_stats sidecar
+        command: --client=grpc --server=grpc --register_interval=5 --register_ttl=10 --enable_stats sidecar
+        environment:
+            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
+            - MICRO_SIDECAR_ADDRESS=${PROXY_ADDRESS}
         ports:
             - "8501:8501"
         networks:
@@ -26,9 +60,12 @@ services:
             - registry
 
     web:
-        image: microhq/micro
+        image: yam8511/micro
         restart: always
-        command: --web_address=0.0.0.0:8502 --registry_address=registry:8500 --register_interval=5 --register_ttl=10 web
+        command: --client=grpc --server=grpc --register_interval=5 --register_ttl=10 web
+        environment:
+            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
+            - MICRO_WEB_ADDRESS=${WEB_ADDRESS}
         ports:
             - "8502:8502"
         networks:
@@ -36,93 +73,6 @@ services:
         depends_on:
             - registry
 
-    api:
-        image: microhq/micro
-        restart: always
-        command: --api_address=0.0.0.0:8503 --registry_address=registry:8500 --register_interval=5 --register_ttl=10 api
-        ports:
-            - "8503:8503"
-        networks:
-            - service_network
-        depends_on:
-            - registry
-
-    # Common Data
-    redis:
-        image: redis
-        restart: always
-        tty: true
-        ports:
-            - "6379:6379"
-        networks:
-            - service_network
-
-    # Service
-    config:
-        image: golang:latest
-        restart: always
-        command: sh ./start.sh
-        tty: true
-        networks:
-            - service_network
-        depends_on:
-            - registry
-        volumes:
-            - .:/go/src/micro_demo
-        working_dir: /go/src/micro_demo/services/config
-        environment:
-            - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - PROJECT_ENV=dev
-
-    greeter:
-        image: golang:latest
-        restart: on-failure
-        command: sh ./start.sh
-        # # 指定結束容器時，發出 interrupt 訊號 (Ctrl + C)
-        # stop_signal: SIGINT
-        tty: true
-        networks:
-            - service_network
-        depends_on:
-            - registry
-        volumes:
-            - .:/go/src/micro_demo
-        working_dir: /go/src/micro_demo/services/greeter
-        environment:
-            - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - PROJECT_ENV=dev
-
-    currency:
-        image: golang:latest
-        restart: always
-        command: sh ./start.sh
-        tty: true
-        networks:
-            - service_network
-        depends_on:
-            - registry
-        volumes:
-            - .:/go/src/micro_demo
-        working_dir: /go/src/micro_demo/services/currency
-        environment:
-            - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-
-    pusher:
-        image: golang:latest
-        restart: on-failure
-        command: sh ./start.sh
-        tty: true
-        networks:
-            - service_network
-        depends_on:
-            - registry
-            - redis
-        volumes:
-            - .:/go/src/micro_demo
-        working_dir: /go/src/micro_demo/services/pusher
-        environment:
-            - REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - PROJECT_ENV=dev
 
 networks:
     service_network:

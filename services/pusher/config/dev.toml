@@ -1,8 +1,0 @@
-[app]
-env = "dev"
-
-[cache]
-host = "redis"
-port = ":6379"
-password = ""
-channel = "melon_pusher"

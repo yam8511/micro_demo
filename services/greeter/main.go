@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"log"
-	"melon_micro/proto/greeter"
 	"os"
+	greeter "proto/greeter/micro"
 	"time"
 
 	"github.com/micro/cli"
+	mrpc "github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
 )
@@ -36,8 +37,10 @@ func logWrapper(fn server.HandlerFunc) (sh server.HandlerFunc) {
 	return
 }
 
+var isClient bool
+
 func main() {
-	service := micro.NewService(
+	service := mrpc.NewService(
 		micro.Name("greeter"),
 		micro.Version("latest"),
 		micro.BeforeStart(func() error {
@@ -59,12 +62,14 @@ func main() {
 		// Add runtime action
 		// We could actually do this above
 		micro.Action(func(c *cli.Context) {
-			if c.Bool("run_client") {
-				runClient(service)
-				os.Exit(0)
-			}
+			isClient = c.Bool("run_client")
 		}),
 	)
+
+	if isClient {
+		runClient()
+		return
+	}
 
 	greeter.RegisterSayHandler(service.Server(), new(Greeter))
 
@@ -74,7 +79,8 @@ func main() {
 }
 
 // Setup and the client
-func runClient(service micro.Service) {
+func runClient() {
+	service := mrpc.NewService()
 	// Create new client
 	microClient := greeter.NewSayClient("greeter", service.Client())
 
