@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/micro/cli"
-	mrpc "github.com/micro/go-grpc"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
 )
@@ -31,8 +30,10 @@ func (c *Greeter) Hello(ctx context.Context, req *greeter.HelloRequest, rsp *gre
 
 func logWrapper(fn server.HandlerFunc) (sh server.HandlerFunc) {
 	sh = func(ctx context.Context, req server.Request, rsp interface{}) error {
-		log.Printf("[%v] server request: %s", time.Now(), req.Method())
-		return fn(ctx, req, rsp)
+		beginTime := time.Now()
+		err := fn(ctx, req, rsp)
+		log.Printf("[%v] server request: %s, excusion: %v", time.Now(), req.Method(), time.Since(beginTime))
+		return err
 	}
 	return
 }
@@ -40,9 +41,11 @@ func logWrapper(fn server.HandlerFunc) (sh server.HandlerFunc) {
 var isClient bool
 
 func main() {
-	service := mrpc.NewService(
+	service := micro.NewService(
 		micro.Name("greeter"),
 		micro.Version("latest"),
+		micro.RegisterInterval(time.Second*5),
+		micro.RegisterTTL(time.Second*10),
 		micro.BeforeStart(func() error {
 			log.Println("🐳  Greeter Service Start 🐳")
 			return nil
@@ -80,7 +83,7 @@ func main() {
 
 // Setup and the client
 func runClient() {
-	service := mrpc.NewService()
+	service := micro.NewService()
 	// Create new client
 	microClient := greeter.NewSayClient("greeter", service.Client())
 

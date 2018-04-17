@@ -40,18 +40,17 @@ services:
         restart: always
         command: -server -bootstrap -rejoin
         ports:
-            - "8300:8300"
             - "8500:8500"
         networks:
             - service_network
 
-    sidecar:
-        image: yam8511/micro
+    proxy:
+        image: microhq/micro
         restart: always
-        command: --client=grpc --server=grpc --register_interval=5 --register_ttl=10 --enable_stats sidecar
+        command: --register_interval=5 --register_ttl=10 --enable_stats proxy
         environment:
             - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - MICRO_SIDECAR_ADDRESS=${PROXY_ADDRESS}
+            - MICRO_PROXY_ADDRESS=${MICRO_PROXY_ADDRESS}
         ports:
             - "8501:8501"
         networks:
@@ -60,14 +59,28 @@ services:
             - registry
 
     web:
-        image: yam8511/micro
+        image: microhq/micro
         restart: always
-        command: --client=grpc --server=grpc --register_interval=5 --register_ttl=10 web
+        command: --register_interval=5 --register_ttl=10 --enable_stats web
         environment:
             - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
-            - MICRO_WEB_ADDRESS=${WEB_ADDRESS}
+            - MICRO_WEB_ADDRESS=${MICRO_WEB_ADDRESS}
         ports:
             - "8502:8502"
+        networks:
+            - service_network
+        depends_on:
+            - registry
+
+    api:
+        image: microhq/micro
+        restart: always
+        command: --register_interval=5 --register_ttl=10 --enable_stats api
+        environment:
+            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
+            - MICRO_API_ADDRESS=${MICRO_API_ADDRESS}
+        ports:
+            - "8503:8503"
         networks:
             - service_network
         depends_on:
