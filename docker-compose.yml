@@ -16,8 +16,10 @@ services:
         depends_on:
             - registry
         environment:
-            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
             - MICRO_SERVER_ADDRESS=${SERVER_ADDRESS}
+            - MICRO_REGISTRY_ADDRESS=${MICRO_REGISTRY_ADDRESS}
+            - MICRO_REGISTER_TTL=${MICRO_REGISTER_TTL}
+            - MICRO_REGISTER_INTERVAL=${MICRO_REGISTER_INTERVAL}
 
     # Data Center
     redis:
@@ -47,10 +49,13 @@ services:
     proxy:
         image: microhq/micro
         restart: always
-        command: --register_interval=5 --register_ttl=10 --enable_stats proxy
+        command: proxy
         environment:
-            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
             - MICRO_PROXY_ADDRESS=${MICRO_PROXY_ADDRESS}
+            - MICRO_REGISTRY_ADDRESS=${MICRO_REGISTRY_ADDRESS}
+            - MICRO_REGISTER_TTL=${MICRO_REGISTER_TTL}
+            - MICRO_REGISTER_INTERVAL=${MICRO_REGISTER_INTERVAL}
+            - MICRO_ENABLE_STATS=${MICRO_ENABLE_STATS}
         ports:
             - "8501:8501"
         networks:
@@ -61,10 +66,13 @@ services:
     web:
         image: microhq/micro
         restart: always
-        command: --register_interval=5 --register_ttl=10 --enable_stats web
+        command: web
         environment:
-            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
             - MICRO_WEB_ADDRESS=${MICRO_WEB_ADDRESS}
+            - MICRO_REGISTRY_ADDRESS=${MICRO_REGISTRY_ADDRESS}
+            - MICRO_REGISTER_TTL=${MICRO_REGISTER_TTL}
+            - MICRO_REGISTER_INTERVAL=${MICRO_REGISTER_INTERVAL}
+            - MICRO_ENABLE_STATS=${MICRO_ENABLE_STATS}
         ports:
             - "8502:8502"
         networks:
@@ -75,10 +83,13 @@ services:
     api:
         image: microhq/micro
         restart: always
-        command: --register_interval=5 --register_ttl=10 --enable_stats api
+        command: api
         environment:
-            - MICRO_REGISTRY_ADDRESS=${REGISTRY_ADDRESS}
             - MICRO_API_ADDRESS=${MICRO_API_ADDRESS}
+            - MICRO_REGISTRY_ADDRESS=${MICRO_REGISTRY_ADDRESS}
+            - MICRO_REGISTER_TTL=${MICRO_REGISTER_TTL}
+            - MICRO_REGISTER_INTERVAL=${MICRO_REGISTER_INTERVAL}
+            - MICRO_ENABLE_STATS=${MICRO_ENABLE_STATS}
         ports:
             - "8503:8503"
         networks:
