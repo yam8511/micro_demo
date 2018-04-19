@@ -15,7 +15,11 @@ services:
             - service_network
         depends_on:
             - registry
+            - nsqd
         environment:
+            - PROJECT_ENV=dev
+            - MICRO_BROKER=nsq
+            - MICRO_BROKER_ADDRESS=nsqd:4150
             - MICRO_SERVER_ADDRESS=${MICRO_SERVER_ADDRESS}
             - MICRO_REGISTRY_ADDRESS=${MICRO_REGISTRY_ADDRESS}
             - MICRO_REGISTER_TTL=${MICRO_REGISTER_TTL}
@@ -48,6 +52,37 @@ services:
             - service_network
         depends_on:
             - db
+
+    # Message Queue
+    nsqlookupd:
+        image: nsqio/nsq
+        command: /nsqlookupd
+        networks:
+            - service_network
+        ports:
+            - "4160:4160"
+            - "4161:4161"
+
+    nsqd:
+        image: nsqio/nsq
+        command: /nsqd -lookupd-tcp-address=nsqlookupd:4160 -tcp-address=:4150 -http-address=:4151
+        depends_on:
+            - nsqlookupd
+        networks:
+            - service_network
+        ports:
+            - "4150:4150"
+            - "4151:4151"
+
+    nsqadmin:
+        image: nsqio/nsq
+        command: /nsqadmin --lookupd-http-address=nsqlookupd:4161
+        depends_on:
+            - nsqlookupd
+        networks:
+            - service_network
+        ports:
+            - "4171:4171"
 
     # Micro Tool
     registry:

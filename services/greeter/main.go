@@ -10,6 +10,7 @@ import (
 	"github.com/micro/cli"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/server"
+	_ "github.com/micro/go-plugins/broker/nsq"
 )
 
 // Greeter 客人
@@ -25,6 +26,15 @@ func (c *Greeter) Ping(ctx context.Context, req *greeter.PingRequest, res *greet
 // Hello 打招呼
 func (c *Greeter) Hello(ctx context.Context, req *greeter.HelloRequest, rsp *greeter.HelloResponse) error {
 	rsp.Greeting = "Hello " + req.Name
+	return nil
+}
+
+// Meet 遇見
+type Meet struct{}
+
+// Nice 打招呼
+func (c *Meet) Nice(ctx context.Context, req *greeter.HelloRequest) error {
+	log.Println("Hello " + req.Name)
 	return nil
 }
 
@@ -74,6 +84,14 @@ func main() {
 		return
 	}
 
+	// 註冊訂閱
+	err := micro.RegisterSubscriber("meet", service.Server(), new(Meet), server.SubscriberQueue("guest"))
+	if err != nil {
+		log.Printf("🎃  Meet Subscribe return an error : %v 🎃", err)
+		return
+	}
+
+	// 註冊服務
 	greeter.RegisterSayHandler(service.Server(), new(Greeter))
 
 	if err := service.Run(); err != nil {
@@ -84,15 +102,24 @@ func main() {
 // Setup and the client
 func runClient() {
 	service := micro.NewService()
+	service.Init()
+
+	err := micro.NewPublisher("meet", service.Client()).Publish(context.Background(), &greeter.HelloRequest{Name: "Zuolar"})
+	if err != nil {
+		log.Fatalln("Publish", err)
+		return
+	}
+	time.Sleep(time.Millisecond)
+
 	// Create new client
 	microClient := greeter.NewSayClient("greeter", service.Client())
 
 	// Ping the service
 	rsp, err := microClient.Ping(context.TODO(), &greeter.PingRequest{})
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("Ping", err)
 	}
 
 	// Print response
-	log.Println(rsp.ServiceName)
+	log.Println("Service", rsp.ServiceName)
 }
