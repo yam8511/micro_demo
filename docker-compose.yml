@@ -16,7 +16,7 @@ services:
         depends_on:
             - registry
         environment:
-            - MICRO_SERVER_ADDRESS=${SERVER_ADDRESS}
+            - MICRO_SERVER_ADDRESS=${MICRO_SERVER_ADDRESS}
             - MICRO_REGISTRY_ADDRESS=${MICRO_REGISTRY_ADDRESS}
             - MICRO_REGISTER_TTL=${MICRO_REGISTER_TTL}
             - MICRO_REGISTER_INTERVAL=${MICRO_REGISTER_INTERVAL}
