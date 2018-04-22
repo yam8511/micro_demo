@@ -3,8 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	pb "proto/auth/micro"
+
+	micro "github.com/micro/go-micro"
 )
 
 // Auth 驗證使用者
@@ -78,6 +81,14 @@ func (c *Auth) Register(ctx context.Context, req *pb.RegisterRequest, res *pb.Re
 		res.User.Sex = pb.Sex_FEMALE
 	}
 
+	go func(user pb.User) {
+		err := micro.NewPublisher("auth_register", service.Client()).Publish(context.Background(), &user)
+		if err != nil {
+			log.Println("Publish auth login error, ", err)
+			return
+		}
+	}(*res.User)
+
 	return
 }
 
@@ -125,6 +136,14 @@ func (c *Auth) Login(ctx context.Context, req *pb.LoginRequest, res *pb.LoginRes
 	} else if user.Sex == SexFEMALE {
 		res.User.Sex = pb.Sex_FEMALE
 	}
+
+	go func(user pb.User) {
+		err := micro.NewPublisher("auth_login", service.Client()).Publish(context.Background(), &user)
+		if err != nil {
+			log.Println("Publish auth login error, ", err)
+			return
+		}
+	}(*res.User)
 
 	return
 }

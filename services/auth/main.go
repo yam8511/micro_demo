@@ -23,9 +23,10 @@ func logWrapper(fn server.HandlerFunc) (sh server.HandlerFunc) {
 }
 
 var isClient bool
+var service micro.Service
 
 func main() {
-	service := micro.NewService(
+	service = micro.NewService(
 		micro.Name("auth"),
 		micro.Version("1.0.0"),
 		micro.RegisterInterval(time.Second*5),
@@ -63,11 +64,18 @@ func main() {
 	}
 
 	// 註冊訂閱
-	// err := micro.RegisterSubscriber("meet", service.Server(), new(Meet), server.SubscriberQueue("guest"))
-	// if err != nil {
-	// 	log.Printf("🎃  Meet Subscribe return an error : %v 🎃", err)
-	// 	return
-	// }
+	err := micro.RegisterSubscriber("auth_login", service.Server(), new(LoginSubscriber), server.SubscriberQueue("login"))
+	if err != nil {
+		log.Printf("🎃  Auth Login Subscribe return an error : %v 🎃", err)
+		return
+	}
+
+	// 註冊訂閱
+	err = micro.RegisterSubscriber("auth_register", service.Server(), new(JoinSubscriber), server.SubscriberQueue("register"))
+	if err != nil {
+		log.Printf("🎃  Auth Register Subscribe return an error : %v 🎃", err)
+		return
+	}
 
 	// 註冊服務
 	pb.RegisterAuthHandler(service.Server(), new(Auth))
@@ -79,8 +87,8 @@ func main() {
 
 // Setup and the client
 func runClient() {
-	service := micro.NewService()
-	service.Init()
+	// service := micro.NewService()
+	// service.Init()
 
 	// err := micro.NewPublisher("meet", service.Client()).Publish(context.Background(), &pb.HelloRequest{Name: "Zuolar"})
 	// if err != nil {
