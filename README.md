@@ -6,7 +6,7 @@
 
 1. 啟動容器
 ```shell
-$ docker-compose up -d
+$ docker-compose up -d --scale registry=4
 ```
 
 2. 查看 Consul (服務發現)
